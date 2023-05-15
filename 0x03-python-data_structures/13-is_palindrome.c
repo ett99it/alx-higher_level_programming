@@ -1,56 +1,114 @@
 #include "lists.h"
-#include <stdlib.h>
 
 /**
- * reverse_array - reverses the content of an array of integers
- * @a: int array to reverse
- * @n: number of elements in the array
- * Return: concatenated string
+ * reverse - reverses the second half of the list
+ *
+ * @h_r: head of the second half
+ * Return: no return
  */
-
-void reverse_array(int *a, int n)
+void reverse(listint_t **h_r)
 {
-        int *begin = a;
-        int *end;
-        int hold = 0;
+	listint_t *prv;
+	listint_t *crr;
+	listint_t *nxt;
 
-        end = a + n - 1;
-        for (; begin < end; begin++, end--)
-        {
-                hold = *end;
-                *end = *begin;
-                *begin = hold;
-        }
+	prv = NULL;
+	crr = *h_r;
+
+	while (crr != NULL)
+	{
+		nxt = crr->next;
+		crr->next = prv;
+		prv = crr;
+		crr = nxt;
+	}
+
+	*h_r = prv;
 }
 
 /**
- * is_palindrome - Return 1  if palindrome, 0 if not
- * @head: linked list
- * Return: Return 1  if palindrome, 0 if not
+ * compare - compares each int of the list
+ *
+ * @h1: head of the first half
+ * @h2: head of the second half
+ * Return: 1 if are equals, 0 if not
  */
+int compare(listint_t *h1, listint_t *h2)
+{
+	listint_t *tmp1;
+	listint_t *tmp2;
 
+	tmp1 = h1;
+	tmp2 = h2;
+
+	while (tmp1 != NULL && tmp2 != NULL)
+	{
+		if (tmp1->n == tmp2->n)
+		{
+			tmp1 = tmp1->next;
+			tmp2 = tmp2->next;
+		}
+		else
+		{
+			return (0);
+		}
+	}
+
+	if (tmp1 == NULL && tmp2 == NULL)
+	{
+		return (1);
+	}
+
+	return (0);
+}
+
+/**
+ * is_palindrome - checks if a singly linked list
+ * is a palindrome
+ * @head: pointer to head of list
+ * Return: 0 if it is not a palindrome,
+ * 1 if it is a palndrome
+ */
 int is_palindrome(listint_t **head)
 {
-        int size, *list, *rev;
-        listint_t *copy = *head;
+	listint_t *slow, *fast, *prev_slow;
+	listint_t *scn_half, *middle;
+	int isp;
 
-        if (!head || !copy)
-                return (0);
-        if (!copy->next)
-                return (1);
+	slow = fast = prev_slow = *head;
+	middle = NULL;
+	isp = 1;
 
-        list = malloc(sizeof(int *));
-        if (!list)
-                return (0);
-        rev = malloc(sizeof(int *));
-        if (!rev)
-                return (0);
-        for (size = 0; copy; copy = copy->next, size++)
-                list[size] = copy->n;
+	if (*head != NULL && (*head)->next != NULL)
+	{
+		while (fast != NULL && fast->next != NULL)
+		{
+			fast = fast->next->next;
+			prev_slow = slow;
+			slow = slow->next;
+		}
 
-        list = rev;
-        reverse_array(rev, size);
-        if (list == rev)
-                return (1);
-        return (0);
+		if (fast != NULL)
+		{
+			middle = slow;
+			slow = slow->next;
+		}
+
+		scn_half = slow;
+		prev_slow->next = NULL;
+		reverse(&scn_half);
+		isp = compare(*head, scn_half);
+
+		if (middle != NULL)
+		{
+			prev_slow->next = middle;
+			middle->next = scn_half;
+		}
+		else
+		{
+			prev_slow->next = scn_half;
+		}
+	}
+
+	return (isp);
 }
