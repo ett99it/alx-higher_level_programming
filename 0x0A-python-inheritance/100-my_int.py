@@ -1,11 +1,20 @@
 #!/usr/bin/python3
+""" 0x0A. Python - Inheritance, task 12 """
+
+
 class MyInt(int):
-    """ Class that inherits from class int"""
+    """Custom int type inverting behavior of != and == operators.
+
+    """
 
     def __eq__(self, other):
-        """ Method that returns != check """
-        return int.__ne__(self, other)
+        """Reverses behavior of == operator.
+
+        """
+        return int(self) != int(other)
 
     def __ne__(self, other):
-        """ Method that returns == check """
-        return int.__eq__(self, other)
+        """Reverses behavior of != operator.
+
+        """
+        return int(self) == int(other)
