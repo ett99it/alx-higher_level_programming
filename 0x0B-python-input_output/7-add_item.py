@@ -1,14 +1,18 @@
 #!/usr/bin/python3
-import json
+"""0x0B. Python - Input/Output, task 9. Load, add, save  """
+
+
 from sys import argv
-import os
+save_to_json_file = __import__('7-save_to_json_file').save_to_json_file
+load_from_json_file = __import__('8-load_from_json_file').load_from_json_file
 
+argv_edit = argv[1:]
 
-if __name__ == '__main__':
-    save_json_file = __import__("7-save_to_json_file").save_to_json_file
-    load_json_file = __import__("8-load_from_json_file").load_from_json_file
-    if not os.path.exists("add_item.json"):
-        with open("add_item.json", "a") as f:
-            pass
-        save_json_file([], "add_item.json")
-    save_json_file(load_json_file("add_item.json") + argv[1:], "add_item.json")
+try:
+    content_list = load_from_json_file("add_item.json")
+except:
+    content_list = []
+finally:
+    for arg in argv_edit:
+        content_list.append(arg)
+    save_to_json_file(content_list, "add_item.json")
